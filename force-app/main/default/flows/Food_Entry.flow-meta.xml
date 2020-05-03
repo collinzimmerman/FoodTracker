@@ -1,6 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <assignments>
+        <name>Add_One</name>
+        <label>Add One</label>
+        <locationX>759</locationX>
+        <locationY>481</locationY>
+        <assignmentItems>
+            <assignToReference>LoopingCount</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Am_I_at_the_slider_amount</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_All_the_food_items</name>
+        <label>Assign All the food items</label>
+        <locationX>640</locationX>
+        <locationY>349</locationY>
+        <assignmentItems>
+            <assignToReference>FoodItemCollection</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>NewFoodItemAssignment</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Add_One</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_New_Foods</name>
+        <label>Assign New Foods</label>
+        <locationX>229</locationX>
+        <locationY>343</locationY>
+        <assignmentItems>
+            <assignToReference>CreateNewFoodResource.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>New_Food_Name</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CreateNewFoodResource.Category__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>New_Food_Category</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CreateNewFoodResource.Shelf_Life_Days__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>New_Shelf_Life</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Create_New_Food</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Food_Item_Assignment</name>
+        <label>Food Item Assignment</label>
+        <locationX>634</locationX>
+        <locationY>206</locationY>
+        <assignmentItems>
+            <assignToReference>NewFoodItemAssignment.Purchase_Date__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Purhcase_Date</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NewFoodItemAssignment.Provided_Expiration_Date__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Provided_Expiration_Date</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NewFoodItemAssignment.Food__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>CreateNewFoodResource.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NewFoodItemAssignment.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>FoodName</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Assign_All_the_food_items</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Am_I_at_the_slider_amount</name>
+        <label>Am I at the slider amount</label>
+        <locationX>837</locationX>
+        <locationY>145</locationY>
+        <defaultConnector>
+            <targetReference>Create_Food_Item_Records</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Time to create</defaultConnectorLabel>
+        <rules>
+            <name>Not_yet_slider_greater_than</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>New_Items.value</leftValueReference>
+                <operator>GreaterThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>LoopingCount</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Food_Item_Assignment</targetReference>
+            </connector>
+            <label>Not yet, slider greater than</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Was_Food_Lookup_Provided</name>
+        <label>Was Food Lookup Provided</label>
+        <locationX>113</locationX>
+        <locationY>209</locationY>
+        <defaultConnector>
+            <targetReference>Assign_New_Foods</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Create New Food</defaultConnectorLabel>
+        <rules>
+            <name>Yes_lookup_provided</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>CreateNewFoodResource.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Food_Item_Entry</targetReference>
+            </connector>
+            <label>Yes, lookup provided</label>
+        </rules>
+    </decisions>
     <description>Entry screen for food and food items.</description>
+    <dynamicChoiceSets>
+        <name>Food_Category_list</name>
+        <dataType>Picklist</dataType>
+        <displayField xsi:nil="true"/>
+        <object xsi:nil="true"/>
+        <picklistField>Category__c</picklistField>
+        <picklistObject>Food__c</picklistObject>
+    </dynamicChoiceSets>
+    <formulas>
+        <name>FoodName</name>
+        <dataType>String</dataType>
+        <expression>{!CreateNewFoodResource.Name} + &quot; Purchased on &quot; + TEXT(MONTH({!Purhcase_Date}))+ &quot;/&quot;+TEXT(DAY({!Purhcase_Date}))+ &quot;/&quot;+ TEXT(YEAR({!Purhcase_Date}))</expression>
+    </formulas>
+    <formulas>
+        <name>Today</name>
+        <dataType>Date</dataType>
+        <expression>Today()</expression>
+    </formulas>
     <interviewLabel>Food Entry {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Food Entry</label>
     <processMetadataValues>
@@ -16,14 +183,39 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordCreates>
+        <name>Create_Food_Item_Records</name>
+        <label>Create Food Item Records</label>
+        <locationX>966</locationX>
+        <locationY>374</locationY>
+        <inputReference>FoodItemCollection</inputReference>
+    </recordCreates>
+    <recordCreates>
+        <name>Create_New_Food</name>
+        <label>Create New Food</label>
+        <locationX>378</locationX>
+        <locationY>251</locationY>
+        <connector>
+            <targetReference>Food_Item_Entry</targetReference>
+        </connector>
+        <inputReference>CreateNewFoodResource</inputReference>
+    </recordCreates>
     <screens>
         <name>Food_Entry_Screen</name>
         <label>Food Entry Screen</label>
-        <locationX>232</locationX>
-        <locationY>98</locationY>
+        <locationX>219</locationX>
+        <locationY>44</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Was_Food_Lookup_Provided</targetReference>
+        </connector>
+        <fields>
+            <name>FoodChoice</name>
+            <fieldText>&lt;p&gt;Find an existing food or add a new one.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>FoodNameLookup</name>
             <extensionName>flowruntime:lookup</extensionName>
@@ -48,30 +240,125 @@
             </inputParameters>
             <isRequired>true</isRequired>
             <outputParameters>
-                <assignToReference>FoundFoodID.Id</assignToReference>
+                <assignToReference>CreateNewFoodResource.Id</assignToReference>
                 <name>recordId</name>
             </outputParameters>
             <outputParameters>
-                <assignToReference>FoundFoodID.Name</assignToReference>
+                <assignToReference>CreateNewFoodResource.Name</assignToReference>
                 <name>recordName</name>
             </outputParameters>
         </fields>
         <fields>
-            <name>LookupItem</name>
-            <fieldText>&lt;p&gt;ID: {!FoodLookup.Id}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Name: {!FoodLookup.Name}&lt;/p&gt;</fieldText>
+            <name>NewFoodBreak</name>
+            <fieldText>&lt;p&gt;Alternatively, enter a new food before clicking next.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>New_Food_Name</name>
+            <dataType>String</dataType>
+            <fieldText>Food Name</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>New_Food_Category</name>
+            <choiceReferences>Food_Category_list</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Food Category</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>New_Shelf_Life</name>
+            <dataType>Number</dataType>
+            <fieldText>Shelf Life (Days)</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Food_Item_Entry</name>
+        <label>Food Item Entry</label>
+        <locationX>510</locationX>
+        <locationY>76</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Food_Item_Assignment</targetReference>
+        </connector>
+        <fields>
+            <name>Purhcase_Date</name>
+            <dataType>Date</dataType>
+            <defaultValue>
+                <elementReference>Today</elementReference>
+            </defaultValue>
+            <fieldText>Purhcase Date</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Provided_Expiration_Date</name>
+            <dataType>Date</dataType>
+            <fieldText>Provided Expiration Date</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>New_Items</name>
+            <extensionName>flowruntime:slider</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>min</name>
+                <value>
+                    <numberValue>1.0</numberValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>value</name>
+                <value>
+                    <numberValue>1.0</numberValue>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>label</name>
+                <value>
+                    <stringValue>Number of Items</stringValue>
+                </value>
+            </inputParameters>
+            <isRequired>true</isRequired>
+            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
         <locationX>50</locationX>
-        <locationY>50</locationY>
+        <locationY>21</locationY>
         <connector>
             <targetReference>Food_Entry_Screen</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>CreateNewFoodResource</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Food__c</objectType>
+    </variables>
+    <variables>
+        <name>FoodItemCollection</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Food_Item__c</objectType>
+    </variables>
     <variables>
         <name>FoodLookup</name>
         <dataType>SObject</dataType>
@@ -81,11 +368,22 @@
         <objectType>Food__c</objectType>
     </variables>
     <variables>
-        <name>FoundFoodID</name>
+        <name>LoopingCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>1.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <name>NewFoodItemAssignment</name>
         <dataType>SObject</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
-        <objectType>Food__c</objectType>
+        <objectType>Food_Item__c</objectType>
     </variables>
 </Flow>

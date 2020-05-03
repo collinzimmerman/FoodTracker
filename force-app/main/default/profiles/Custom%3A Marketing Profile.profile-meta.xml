@@ -43,6 +43,10 @@
         <layout>Food__c-Food Layout</layout>
     </layoutAssignments>
     <tabVisibilities>
+        <tab>Food_Entry</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>Food_Item__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
