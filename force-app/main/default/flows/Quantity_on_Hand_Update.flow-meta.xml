@@ -118,7 +118,7 @@
             <targetReference>Current_Food_Record</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>ConsumedQuantity</name>
         <dataType>Number</dataType>
