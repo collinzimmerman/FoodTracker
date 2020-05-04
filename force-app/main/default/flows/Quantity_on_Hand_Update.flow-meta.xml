@@ -93,7 +93,7 @@
             <inputParameters>
                 <name>step</name>
                 <value>
-                    <numberValue>0.5</numberValue>
+                    <numberValue>0.25</numberValue>
                 </value>
             </inputParameters>
             <inputParameters>
