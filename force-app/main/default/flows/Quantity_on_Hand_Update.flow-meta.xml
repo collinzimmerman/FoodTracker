@@ -87,7 +87,7 @@
             <inputParameters>
                 <name>max</name>
                 <value>
-                    <elementReference>Current_Food_Record.Servings_Per_Container__c</elementReference>
+                    <elementReference>Current_Food_Record.Quantity_Remaining__c</elementReference>
                 </value>
             </inputParameters>
             <inputParameters>
@@ -118,7 +118,7 @@
             <targetReference>Current_Food_Record</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>ConsumedQuantity</name>
         <dataType>Number</dataType>

@@ -35,8 +35,8 @@
     <assignments>
         <name>Assign_New_Foods</name>
         <label>Assign New Foods</label>
-        <locationX>229</locationX>
-        <locationY>343</locationY>
+        <locationX>79</locationX>
+        <locationY>403</locationY>
         <assignmentItems>
             <assignToReference>CreateNewFoodResource.Name</assignToReference>
             <operator>Assign</operator>
@@ -58,6 +58,13 @@
                 <elementReference>New_Shelf_Life</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>CreateNewFoodResource.Servings_Per_Container__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Servings_Per_Container</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Create_New_Food</targetReference>
         </connector>
@@ -65,8 +72,8 @@
     <assignments>
         <name>Food_Item_Assignment</name>
         <label>Food Item Assignment</label>
-        <locationX>634</locationX>
-        <locationY>206</locationY>
+        <locationX>632</locationX>
+        <locationY>207</locationY>
         <assignmentItems>
             <assignToReference>NewFoodItemAssignment.Purchase_Date__c</assignToReference>
             <operator>Assign</operator>
@@ -99,14 +106,7 @@
             <assignToReference>NewFoodItemAssignment.Quantity_Remaining__c</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Quantity_Per_Package</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>NewFoodItemAssignment.Servings_Per_Container__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Quantity_Per_Package</elementReference>
+                <elementReference>CreateNewFoodResource.Servings_Per_Container__c</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -141,8 +141,8 @@
     <decisions>
         <name>Was_Food_Lookup_Provided</name>
         <label>Was Food Lookup Provided</label>
-        <locationX>113</locationX>
-        <locationY>209</locationY>
+        <locationX>37</locationX>
+        <locationY>204</locationY>
         <defaultConnector>
             <targetReference>Assign_New_Foods</targetReference>
         </defaultConnector>
@@ -158,7 +158,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Food_Item_Entry</targetReference>
+                <targetReference>Get_Lookup_record</targetReference>
             </connector>
             <label>Yes, lookup provided</label>
         </rules>
@@ -207,18 +207,40 @@
     <recordCreates>
         <name>Create_New_Food</name>
         <label>Create New Food</label>
-        <locationX>378</locationX>
-        <locationY>251</locationY>
+        <locationX>291</locationX>
+        <locationY>345</locationY>
         <connector>
             <targetReference>Food_Item_Entry</targetReference>
         </connector>
         <inputReference>CreateNewFoodResource</inputReference>
     </recordCreates>
+    <recordLookups>
+        <name>Get_Lookup_record</name>
+        <label>Get Lookup record</label>
+        <locationX>358</locationX>
+        <locationY>111</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Food_Item_Entry</targetReference>
+        </connector>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>CreateNewFoodResource.Id</elementReference>
+            </value>
+        </filters>
+        <object>Food__c</object>
+        <outputReference>CreateNewFoodResource</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Servings_Per_Container__c</queriedFields>
+        <queriedFields>Name</queriedFields>
+    </recordLookups>
     <screens>
         <name>Food_Entry_Screen</name>
         <label>Food Entry Screen</label>
-        <locationX>219</locationX>
-        <locationY>44</locationY>
+        <locationX>187</locationX>
+        <locationY>22</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -283,6 +305,14 @@
             <isRequired>true</isRequired>
         </fields>
         <fields>
+            <name>Servings_Per_Container</name>
+            <dataType>Number</dataType>
+            <fieldText>Servings Per Container</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>0</scale>
+        </fields>
+        <fields>
             <name>New_Shelf_Life</name>
             <dataType>Number</dataType>
             <fieldText>Shelf Life (Days)</fieldText>
@@ -320,14 +350,6 @@
             <fieldText>Provided Expiration Date</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
-        </fields>
-        <fields>
-            <name>Quantity_Per_Package</name>
-            <dataType>Number</dataType>
-            <fieldText>Quantity Per Package</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
-            <scale>2</scale>
         </fields>
         <fields>
             <name>New_Items</name>

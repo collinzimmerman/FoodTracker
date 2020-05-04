@@ -75,6 +75,13 @@
                 <value>Quantity_on_Hand_Update</value>
             </componentInstanceProperties>
             <componentName>flowruntime:interview</componentName>
+            <visibilityRule>
+                <criteria>
+                    <leftValue>{!Record.IsConsumed__c}</leftValue>
+                    <operator>EQUAL</operator>
+                    <rightValue>false</rightValue>
+                </criteria>
+            </visibilityRule>
         </componentInstances>
         <mode>Replace</mode>
         <name>sidebar</name>
