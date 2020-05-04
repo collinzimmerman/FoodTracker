@@ -32,6 +32,11 @@
                 <default>false</default>
                 <label>Dried</label>
             </value>
+            <value>
+                <fullName>Packaged</fullName>
+                <default>false</default>
+                <label>Packaged</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

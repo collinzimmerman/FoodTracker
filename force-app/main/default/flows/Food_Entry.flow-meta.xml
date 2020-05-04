@@ -95,6 +95,20 @@
                 <elementReference>FoodName</elementReference>
             </value>
         </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NewFoodItemAssignment.Quantity_Remaining__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Quantity_Per_Package</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>NewFoodItemAssignment.Servings_Per_Container__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Quantity_Per_Package</elementReference>
+            </value>
+        </assignmentItems>
         <connector>
             <targetReference>Assign_All_the_food_items</targetReference>
         </connector>
@@ -306,6 +320,14 @@
             <fieldText>Provided Expiration Date</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>Quantity_Per_Package</name>
+            <dataType>Number</dataType>
+            <fieldText>Quantity Per Package</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <scale>2</scale>
         </fields>
         <fields>
             <name>New_Items</name>
